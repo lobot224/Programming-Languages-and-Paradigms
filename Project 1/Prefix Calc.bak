@@ -1,0 +1,69 @@
+#lang racket
+
+(define prompt?
+  (let [(args (current-command-line-arguments))]
+    (cond
+      [(= (vector-length args) 0) #t]
+      [(string=? (vector-ref args 0) "-b") #f]
+      [(string=? (vector-ref args 0) "--batch") #f]
+      [else #t])))
+
+(define history '())
+
+(define (add-to-history result)
+  (set! history (cons result history)))
+
+(define (get-from-history id)
+  (let ([index (- (length history) id)])
+    (if (and (>= index 0) (< index (length history)))
+        (list-ref history index)
+        (error "Invalid history reference"))))
+
+(define (evaluate-expression expr)
+  (cond
+    [(number? expr) expr]
+    [(symbol? expr)
+     (case expr
+       [(+) (lambda (a b) (+ a b))]
+       [(*) (lambda (a b) (* a b))]
+       [(/) (lambda (a b) (if (= b 0) (error "Division by zero") (/ a b)))]
+       [(-) (lambda (a) (- a))]
+       [else (error "Unknown operator")])]
+    [(list? expr)
+     (let ([op (evaluate-expression (car expr))]
+           [args (map evaluate-expression (cdr expr))])
+       (apply op args))]
+    [(string? expr)
+     (if (string-prefix? "$" expr)
+         (get-from-history (string->number (substring expr 1)))
+         (error "Invalid expression"))]
+    [else (error "Invalid expression")]))
+
+(define (interactive-mode)
+  (displayln "Prefix Calculator (Interactive Mode)")
+  (let loop ()
+    (display "> ")
+    (let ([input (read-line)])
+      (unless (eof-object? input)
+        (with-handlers ([exn:fail? (lambda (e) (displayln (exn-message e)))])
+          (let ([result (evaluate-expression (read (open-input-string input)))])
+            (add-to-history result)
+            (displayln result)))
+        (loop)))))
+
+(define (batch-mode)
+  (let loop ()
+    (let ([input (read-line)])
+      (unless (eof-object? input)
+        (with-handlers ([exn:fail? (lambda (e) (displayln (exn-message e)))])
+          (let ([result (evaluate-expression (read (open-input-string input)))])
+            (add-to-history result)
+            (displayln result)))
+        (loop)))))
+
+(define (main)
+  (if prompt?
+      (interactive-mode)
+      (batch-mode)))
+
+(main)
