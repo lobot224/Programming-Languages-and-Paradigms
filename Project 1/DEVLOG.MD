@@ -83,4 +83,14 @@ Programming in Racket is certainly somehting different than what I had expected.
 The prefix calculator has come a long way since its basic 'mode' function that we were given before and I continue to grow fascinated with how its
 able to operate. Even if it makes me rip my hair out... 
 
-I hope to add more as time goes on even after this project is over, maybe something like remainder results would be fun to work with, but we'll see. :) 
+I hope to add more as time goes on even after this project is over, maybe something like the remainder results would be fun to work with, but we'll see. :) 
+
+
+## March 27th 
+
+-- **Goal:** Implement latest feature professor requested 
+-- **Progress:** Completed 
+-- **Plan:** To implement a 'quit' scan of the string input to determine if it is ending the interactive mode or batch mode file
+-- **Problems:** So far so good, though I need to more thorough testing before submission. 
+-- **Author's Notes:** 
+This took me way longer than it should have but still it feels rough that this requirement was added just before the submission date. Nevertheless, it works. I think... Will finish testing tomorrow and submit. :) 
