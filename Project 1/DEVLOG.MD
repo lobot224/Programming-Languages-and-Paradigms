@@ -99,7 +99,7 @@ This took me way longer than it should have but still it feels rough that this r
 
 ## March 28th - Submission day 
 
--- **Goal:** To wrap up and optimize 
+-- **Goal:** To wrap up and optimize. 
 -- **Progress:** Completed before 11:59 PM 
 -- **Plan:** Review code, remove sections leftover from debugging, optimize as much as possible and include a readme in the repos. 
 -- **Problems:** A problem that I had encountered at the end of yesterday was that the code kept forcing all whole numbers to floats... 
