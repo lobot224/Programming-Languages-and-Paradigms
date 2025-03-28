@@ -94,3 +94,17 @@ I hope to add more as time goes on even after this project is over, maybe someth
 -- **Problems:** So far so good, though I need to more thorough testing before submission. 
 -- **Author's Notes:** 
 This took me way longer than it should have but still it feels rough that this requirement was added just before the submission date. Nevertheless, it works. I think... Will finish testing tomorrow and submit. :) 
+
+
+
+## March 28th - Submission day 
+
+-- **Goal:** To wrap up and optimize 
+-- **Progress:** Completed before 11:59 PM 
+-- **Plan:** Review code, remove sections leftover from debugging, optimize as much as possible and include a readme in the repos. 
+-- **Problems:** A problem that I had encountered at the end of yesterday was that the code kept forcing all whole numbers to floats... 
+Another one also was that it wasn't quitting at the end of a line or at 'quit' fully in batch mode and also later interactive mode after the fact. 
+Anyway, this proved problematic, and in the debug the code was pushing all integers into floats for arithmetic operations, then round off and up in the end. This worked in theory, but in practice something didn't add up. 
+Even at the end of the 'round up' it was still showing that '.0' for whole numbers. 
+-- **Author's Notes:** Last round of testing is over, now we just need to submit it. 
+This project was fun to do and I look forward to tinkering with it more when even after its conclusion. 
