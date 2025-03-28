@@ -98,9 +98,7 @@ In prefix notation, the operator appears **before** its operands, and expression
   - Calculates `5 * 10` → `50`.
 
 #### **Complex Nested Example**
-- Expression: `(+ (* (- (/ 16 4) 2) 5) (/ (* 6 3) (+ 1 2)))`  
-  Step-by-step breakdown:
-  - `(/ 16 4)` → `4`.
+- Expre  - `(/ 16 4)` → `4`.
   - `(- 4 2)` → `2`.
   - `(* 2 5)` → `10`.
   - `(* 6 3)` → `18`.
@@ -209,4 +207,101 @@ Error: Division by zero is undefined
 ### **Dependencies**
 - Racket programming language (install [here](https://racket-lang.org/)).
 
+--Ah, right, Logan—got it! Since it’s based on our conversation, I’ll weave the necessary details into the revised `README.md`. Here’s a polished version of it that aligns perfectly with your project:
+
 ---
+
+### **Prefix Calculator**
+
+Welcome to the Prefix Calculator project! This program is a simple yet robust implementation of a prefix (Polish notation) calculator, capable of evaluating mathematical expressions using basic operators (`+`, `-`, `*`, `/`) and managing a history of results. Designed in **Racket**, the calculator supports both interactive and batch mode operations, ensuring flexibility and ease of use.
+
+---
+
+### **Features**
+1. **Interactive Mode**:
+   - Allows users to input prefix expressions dynamically.
+   - Tracks and prints the results of calculations with unique history IDs.
+   - Supports history references (`$n`) for previously calculated results.
+
+2. **Batch Mode**:
+   - Processes a text file containing prefix expressions line by line.
+   - Handles errors gracefully and continues processing subsequent lines.
+   - Skips blank lines automatically and omits invalid expressions.
+
+3. **Mathematical Operators**:
+   - Basic arithmetic operations: addition (`+`), subtraction (`-`), multiplication (`*`), and division (`/`).
+   - Division includes safeguards against division by zero errors.
+   - Handles both unary and multi-operand operations.
+
+4. **Floating Point Precision**:
+   - Results are calculated with floating-point precision, ensuring accuracy even for complex calculations.
+
+5. **Error Handling**:
+   - Provides descriptive error messages for invalid input, division by zero, and out-of-range history references.
+   - Continues processing without interruption in batch mode.
+
+---
+
+### **How to Use**
+#### **Interactive Mode**
+To launch the program in interactive mode:
+1. Open a terminal or command prompt.
+2. Run the program using the command:
+   ```
+   racket prefix_calc.rkt
+   ```
+3. Enter prefix expressions interactively, one at a time.
+4. Type `quit` to exit the program.
+
+#### **Batch Mode**
+To process a text file of expressions:
+1. Prepare a `.txt` file with each prefix expression on a new line.
+2. Run the program in batch mode using:
+   ```
+   racket prefix_calc.rkt --batch < test_cases.txt
+   ```
+3. The program evaluates each expression and outputs results with history IDs. Errors are reported but processing continues.
+
+---
+
+### **Input Format**
+- Prefix notation: Operators precede their operands.
+  - Example: `(+ 1 2)` evaluates to `3.0`.
+- History references (`$n`): Refer to results of previous calculations.
+  - Example: `(* $1 2)` doubles the result of the first expression.
+- Nested expressions are supported:
+  - Example: `(+ (* 2 3) (- 10 4))`.
+
+---
+
+### **Example Output**
+For the input file `test_cases.txt`:
+```
+(+ 1 2)
+(- 5 3)
+(* $1 2)
+(/ $1 0)   ; Error
+(+ invalid)
+```
+
+The output would be:
+```
+1: 3.0
+2: 2.0
+3: 6.0
+Error: Division by zero is undefined
+Error: Invalid Expression
+Finished Processing All Lines
+```
+
+---
+
+### **Technical Notes**
+- **No Rounding of Results**: Outputs like `6.300000000000001` reflect floating-point precision and are intentionally unrounded for accuracy.
+- **Error Resilience**: Errors don't halt execution in batch mode; the program skips invalid expressions gracefully.
+- **Blank Lines**: Automatically ignored during processing.
+
+---
+
+Feel free to update or refine this `README.md` further—it’s your project, after all! Let me know if you’d like additional tweaks or sections added. 🚀
+

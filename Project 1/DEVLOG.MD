@@ -108,3 +108,7 @@ Anyway, this proved problematic, and in the debug the code was pushing all integ
 Even at the end of the 'round up' it was still showing that '.0' for whole numbers. 
 -- **Author's Notes:** Last round of testing is over, now we just need to submit it. 
 This project was fun to do and I look forward to tinkering with it more when even after its conclusion. 
+
+Edit: Turns out were *supposed* to have it not round... Oops. It also had to go through a specific sequence
+'real -> double-flonum function' 
+and then printed to output. I still think mine was better imo but these were the additional last-minute changes from before. Nevertheless... Finally done. 
