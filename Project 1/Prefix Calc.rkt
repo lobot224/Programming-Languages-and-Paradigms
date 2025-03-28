@@ -11,25 +11,30 @@
 (define history '())
 
 (define (add-to-history result)
-  ;; Add the result to the start of the history list
   (set! history (cons result history)))
 
 (define (get-from-history id)
-  ;; Calculate the index in the history list
   (let ([index (- (length history) id)])
-    ;; Check if the index is valid
     (if (or (< index 0) (>= index (length history)))
         (error (format "Invalid history reference $~a: Out of range" id))
         (list-ref history index))))
 
 (define (round-number num)
-  ;; Strictly round numbers to two decimal places
   (if (real? num)
-      (/ (floor (+ (* num 100) 0.5)) 100.0) ; Proper rounding logic
-      num)) ; Return num as-is if it's not a real number
+      (let ([rounded (/ (floor (+ (* num 100) 0.5)) 100.0)])
+        (if (= rounded (floor rounded))
+            (exact->inexact (floor rounded))
+            rounded))
+      num))
+
+(define (format-output result)
+  (cond
+    [(and (real? result) (= result (floor result)))
+     (substring (number->string result) 0 (- (string-length (number->string result)) 2))]
+    [(real? result) (number->string result)]
+    [else (format "~a" result)]))
 
 (define (replace-history-ref arg)
-  ;; Replace history references recursively
   (cond
     [(symbol? arg)
      (let ([str (symbol->string arg)])
@@ -43,24 +48,20 @@
 
 (define (process expr)
   (cond
-    [(number? expr) (round-number expr)] ; Round numbers directly
-    [(list? expr) ; Handle nested lists
+    [(number? expr) (round-number expr)]
+    [(list? expr)
      (let ([op (car expr)]
-           [args (map process (cdr expr))]) ; Process arguments recursively
-       (cond
-         [(and (member op '(+ * / -)) (andmap number? args))
-          (round-number
-           (case op
-             [(+) (apply + args)]
-             [(*) (apply * args)]
-             [(/) (if (or (null? (cdr args)) 
-                          (and (number? (car (cdr args))) (zero? (car (cdr args)))))
-                      (error "Error: Division by zero is undefined")
-                      (apply / args))]
-             [(-) (if (= (length args) 1) (- (car args)) (apply - args))]))]
-         [else
-          (error "Invalid operator or arguments")]))]
-    [(symbol? expr) (replace-history-ref expr)] ; Replace single symbols
+           [args (map process (cdr expr))])
+       (round-number
+        (case op
+          [(+) (apply + args)]
+          [(*) (apply * args)]
+          [(/) (if (or (null? (cdr args)) 
+                       (and (number? (car (cdr args))) (zero? (car (cdr args)))))
+                  (error "Error: Division by zero is undefined")
+                  (apply / args))]
+          [(-) (if (= (length args) 1) (- (car args)) (apply - args))])))]
+    [(symbol? expr) (replace-history-ref expr)]
     [else (error "Invalid expression")]))
 
 (define (evaluate-expression expr)
@@ -72,26 +73,36 @@
   (displayln "Prefix Calculator (Interactive Mode)")
   (let loop ()
     (display "> ")
-    (let ([input (read-line)])
-      (unless (eof-object? input)
-        (with-handlers ([exn:fail? (lambda (e) (displayln (exn-message e)))])
-          (let ([result (evaluate-expression (read (open-input-string input)))])
-            (add-to-history result)
-            (displayln result)))
-        (loop)))))
+    (let ([input (string-trim (read-line))])
+      (if (string=? input "quit")
+          (begin
+            (displayln "Exiting... Goodbye!")
+            (exit))
+          (unless (eof-object? input)
+            (with-handlers ([exn:fail? (lambda (e) (displayln (exn-message e)))])
+              (let ([result (evaluate-expression (read (open-input-string input)))])
+                (add-to-history result)
+                (display (format-output result))
+                (newline)))
+            (loop))))))
 
 (define (batch-mode)
   (let loop ()
     (let ([input (read-line)])
-      (unless (eof-object? input)
-        (unless (string-prefix? input "#") ; Ignore lines that start with "#"
-          (let ([trimmed-input (string-trim input)]) ; Trim whitespace
-            (unless (string=? trimmed-input "") ; Skip empty lines
-              (with-handlers ([exn:fail? (lambda (e) (displayln (exn-message e)))])
-                (let ([result (evaluate-expression (read (open-input-string trimmed-input)))])
-                  (add-to-history result)
-                  (displayln result))))))
-        (loop)))))
+      (cond
+        [(or (eof-object? input) (string=? (string-trim input) "quit"))
+         ;; Exit when EOF or "quit" is encountered
+         (displayln "Exiting batch mode... Goodbye!")
+         (exit)]
+        [else
+         (let ([trimmed-input (string-trim input)]) ; Trim whitespace
+           (unless (string=? trimmed-input "") ; Skip empty lines
+             (with-handlers ([exn:fail? (lambda (e) (displayln (exn-message e)))])
+               (let ([result (evaluate-expression (read (open-input-string trimmed-input)))])
+                 (add-to-history result)
+                 (display (format-output result))
+                 (newline)))))
+         (loop)])))) ; Recursively process the next line
 
 (define (main)
   (if prompt?
